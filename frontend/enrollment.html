@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Enrollment</title>
+    <link rel="stylesheet" href="styles/enrollment.css">
+</head>
+<body>
+    <div class="enrollment-container">
+        <header class="enrollment-header">
+            <h1>Student Enrollment</h1>
+            <a href="/teacher-dashboard.html" class="btn">Back to Dashboard</a>
+        </header>
+        <main class="enrollment-list" id="enrollment-list"></main>
+        <footer class="enrollment-footer">
+            <p>&copy; 2024 Student Registration System</p>
+        </footer>
+    </div>
+
+    <script>
+        function displayEnrollments(enrollments) {
+            const enrollmentList = document.getElementById('enrollment-list');
+            if (enrollments.length === 0) {
+                enrollmentList.innerHTML = '<p>No students enrolled.</p>';
+                return;
+            }
+
+            enrollments.forEach(student => {
+                const studentItem = document.createElement('div');
+                studentItem.className = 'enrollment-item';
+                studentItem.innerHTML = `
+                    <h3>${student.name}</h3>
+                    <p>ID: ${student.id}</p>
+                `;
+                enrollmentList.appendChild(studentItem);
+            });
+        }
+
+        window.onload = function() {
+            const enrollments = JSON.parse(localStorage.getItem('studentEnrollment')) || [];
+            displayEnrollments(enrollments);
+        };
+    </script>
+</body>
+</html>

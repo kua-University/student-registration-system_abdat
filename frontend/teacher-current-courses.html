@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Current Courses</title>
+    <link rel="stylesheet" href="styles/current-courses.css">
+</head>
+<body>
+    <div class="current-courses-container">
+        <header class="current-courses-header">
+            <h1>Current Courses</h1>
+            <a href="/teacher-dashboard.html" class="btn">Back to Dashboard</a>
+        </header>
+        <main class="current-courses-list" id="courses-list"></main>
+        <footer class="current-courses-footer">
+            <p>&copy; 2024 Student Registration System</p>
+        </footer>
+    </div>
+
+    <script>
+        function displayCourses(courses) {
+            const coursesList = document.getElementById('courses-list');
+            if (courses.length === 0) {
+                coursesList.innerHTML = '<p>No courses found.</p>';
+                return;
+            }
+
+            courses.forEach(course => {
+                const courseItem = document.createElement('div');
+                courseItem.className = 'current-course-item';
+                courseItem.innerHTML = `
+                    <h3>${course.name}</h3>
+                    <p>Code: ${course.code}</p>
+                    <p>Description: ${course.description}</p>
+                `;
+                coursesList.appendChild(courseItem);
+            });
+        }
+
+        window.onload = function() {
+            const courses = JSON.parse(localStorage.getItem('teacherCourses')) || [];
+            displayCourses(courses);
+        };
+    </script>
+</body>
+</html>

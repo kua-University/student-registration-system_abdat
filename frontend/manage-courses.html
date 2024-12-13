@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Courses</title>
+    <link rel="stylesheet" href="styles/manage-courses.css">
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="manage-courses-container">
+        <header class="manage-courses-header">
+            <h1>Manage Courses</h1>
+            <button class="btn" onclick="openModal()">Add Course</button>
+            <a href="#" class="btn" onclick="goToDashboard()">Back to Dashboard</a>
+        </header>
+
+        <!-- Modal for Adding New Course -->
+        <div id="addCourseModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <h2>Add New Course</h2>
+                <form id="add-course-form" onsubmit="addCourse(event)">
+                    <input type="text" id="courseName" placeholder="Course Name" required>
+                    <input type="text" id="courseDescription" placeholder="Description" required>
+                    <input type="text" id="teacherId" placeholder="Teacher ID" required>
+                    <button type="submit" class="btn">Add Course</button>
+                </form>
+            </div>
+        </div>
+
+        <main class="courses-list" id="courses-list"></main>
+        <footer class="manage-courses-footer">
+            <p>&copy; 2024 Student Registration System</p>
+        </footer>
+    </div>
+
+    <script>
+        function displayCourses(courses) {
+            const coursesList = document.getElementById('courses-list');
+            coursesList.innerHTML = '';
+            if (courses.length === 0) {
+                coursesList.innerHTML = '<p>No courses found.</p>';
+                return;
+            }
+            courses.forEach(course => {
+                const courseItem = document.createElement('div');
+                courseItem.className = 'course-item';
+                courseItem.innerHTML = `
+                    <h3>${course.name}</h3>
+                    <p>Description: ${course.description}</p>
+                    <p>Teacher ID: ${course.teacherId}</p>
+                    <button class="btn" onclick="removeCourse(${course.id})">Remove Course</button>
+                `;
+                coursesList.appendChild(courseItem);
+            });
+        }
+
+        function removeCourse(courseId) {
+            if (confirm("Are you sure you want to remove this course?")) {
+                fetch(`http://localhost:8082/api/courses/${encodeURIComponent(courseId)}`, { method: 'DELETE' })
+                    .then(response => {
+                        if (response.ok) {
+                            alert(`Course with ID ${courseId} removed!`);
+                            fetchCourses(); // Re-fetch courses
+                        } else {
+                            throw new Error('Failed to remove course');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred while removing the course.');
+                    });
+            }
+        }
+
+        function fetchCourses() {
+            fetch('http://localhost:8082/api/courses')
+                .then(response => {
+                    if (!response.ok) {
+                        return response.text().then(text => {
+                            throw new Error(`HTTP error! Status: ${response.status}, Body: ${text}`);
+                        });
+                    }
+                    return response.json();
+                })
+                .then(courses => {
+                    console.log('Courses received:', courses);
+                    displayCourses(courses);
+                })
+                .catch(error => {
+                    console.error('Error fetching courses:', error);
+                    document.getElementById('courses-list').innerHTML = `<p>Failed to load courses. Please try again later. Error: ${error.message}</p>`;
+                });
+        }
+
+        function addCourse(event) {
+            event.preventDefault();
+            const newCourse = {
+                name: document.getElementById('courseName').value,
+                description: document.getElementById('courseDescription').value,
+                teacherId: document.getElementById('teacherId').value,
+            };
+
+            fetch('http://localhost:8082/api/courses/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(newCourse)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to add course');
+                }
+                alert('Course added successfully!');
+                closeModal();
+                fetchCourses();
+            })
+            .catch(error => {
+                console.error('Error adding course:', error);
+                alert('An error occurred while adding the course.');
+            });
+        }
+
+        function openModal() {
+            document.getElementById('addCourseModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('addCourseModal').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('addCourseModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+
+        window.onload = fetchCourses;
+    </script>
+</body>
+</html>

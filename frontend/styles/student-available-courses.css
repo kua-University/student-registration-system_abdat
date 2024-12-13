@@ -1,0 +1,123 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    line-height: 1.6;
+}
+
+.available-courses-container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
+}
+
+.available-courses-header {
+    background: #007BFF;
+    color: white;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.available-courses-list {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.available-course-item {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.available-course-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+h1 {
+    margin: 0;
+    font-size: 2em;
+}
+
+h3 {
+    margin: 0 0 10px;
+    color: #007BFF;
+    font-size: 1.5em;
+}
+
+p {
+    margin: 5px 0;
+    font-size: 1em;
+}
+
+.available-courses-footer {
+    text-align: center;
+    margin-top: 30px;
+    color: #666;
+    font-size: 0.9em;
+}
+
+.btn {
+    display: inline-block;
+    background: #28a745;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    text-decoration: none;
+    margin-top: 10px;
+    transition: background 0.3s;
+    font-weight: bold;
+}
+
+.btn:hover {
+    background: #218838;
+}
+
+.enroll-btn {
+    background: #007BFF; /* Blue for enroll button */
+}
+
+.enroll-btn:hover {
+    background: #0056b3;
+}
+
+@media (max-width: 768px) {
+    .available-courses-container {
+        padding: 10px;
+    }
+
+    .available-course-item {
+        padding: 15px;
+    }
+
+    h1 {
+        font-size: 1.8em;
+    }
+
+    h3 {
+        font-size: 1.4em;
+    }
+
+    p {
+        font-size: 0.9em;
+    }
+}
+
+/* Additional Styles for Buttons */
+.enroll-btn {
+    padding: 12px 20px;
+    border: none;
+    cursor: pointer;
+    font-size: 1em;
+    width: 100%;
+}
+
+.enroll-btn:hover {
+    opacity: 0.9;
+}

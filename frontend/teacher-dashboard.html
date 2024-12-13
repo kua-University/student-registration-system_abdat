@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Dashboard</title>
+    <link rel="stylesheet" href="styles/teacher-dashboard.css">
+</head>
+<body>
+    <div class="admin-dashboard-container">
+        <header class="admin-dashboard-header">
+            <h1>Teacher Dashboard</h1>
+            <a href="#" class="btn" onclick="logout()">Logout</a>
+        </header>
+
+        <main class="dashboard-summary">
+            <div class="card">
+                <h3>Current Courses</h3>
+                <p>View your currently assigned courses.</p>
+                <a href="/current-courses" class="btn">View Courses</a>
+            </div>
+            <div class="card">
+                <h3>Student Enrollment</h3>
+                <p>Manage student enrollment for your courses.</p>
+                <a href="/enrollment" class="btn">Manage Enrollment</a>
+            </div>
+        </main>
+
+        <footer class="admin-dashboard-footer">
+            <p>&copy; 2024 Student Registration System</p>
+        </footer>
+    </div>
+
+    <script>
+        function logout() {
+            localStorage.removeItem('authToken');
+            window.location.href = 'login.html';
+            history.replaceState(null, null, window.location.href);
+        }
+    </script>
+</body>
+</html>

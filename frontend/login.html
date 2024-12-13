@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="styles/login.css">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <h1>Login to Your Account</h1>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="username">Username/Email</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit" class="btn">Log In</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('login-form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            // Fetch user data from the API
+            const encodedUsername = encodeURIComponent(username);
+            fetch(`http://localhost:8081/api/users/username/${encodedUsername}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('User not found!');
+                    }
+                    return response.json();
+                })
+                .then(user => {
+                    // Check if the password matches
+                    if (user.password === password) {
+                        // Store user data in session storage
+                        sessionStorage.setItem('userData', JSON.stringify(user));
+
+                        // Redirect based on user role
+                        let redirectUrl;
+                        switch (user.role) {
+                            case 'ADMIN':
+                                redirectUrl = 'admin-dashboard.html';
+                                break;
+                            case 'TEACHER':
+                                redirectUrl = 'teacher-dashboard.html';
+                                break;
+                            case 'STUDENT':
+                                redirectUrl = 'student-dashboard.html';
+                                break;
+                            default:
+                                throw new Error('Unknown role!');
+                        }
+
+                        // Redirect to the appropriate dashboard
+                        window.location.href = redirectUrl;
+                    } else {
+                        throw new Error('Incorrect password!');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert(error.message);
+                });
+        });
+    </script>
+</body>
+</html>

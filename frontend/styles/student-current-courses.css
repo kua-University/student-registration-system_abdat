@@ -1,0 +1,98 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    line-height: 1.6;
+}
+
+.current-courses-container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
+}
+
+.current-courses-header {
+    background: #007BFF;
+    color: white;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.current-courses-list {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.current-course-item {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.current-course-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+h1 {
+    margin: 0;
+}
+
+h3 {
+    margin: 0 0 10px;
+    color: #007BFF;
+}
+
+p {
+    margin: 5px 0;
+}
+
+.current-courses-footer {
+    text-align: center;
+    margin-top: 30px;
+    color: #666;
+    font-size: 0.9em;
+}
+
+.btn {
+    display: inline-block;
+    background: #28a745;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    text-decoration: none;
+    margin-top: 10px;
+    transition: background 0.3s;
+}
+
+.btn:hover {
+    background: #218838;
+}
+
+.status-approved {
+    color: #28a745; /* Green for approved */
+}
+
+.status-pending {
+    color: #ffc107; /* Yellow for pending */
+}
+
+.status-rejected {
+    color: #dc3545; /* Red for rejected */
+}
+
+@media (max-width: 768px) {
+    .current-courses-container {
+        padding: 10px;
+    }
+
+    .current-course-item {
+        padding: 15px;
+    }
+}

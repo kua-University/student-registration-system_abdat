@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Current Courses</title>
+    <link rel="stylesheet" href="styles/student-current-courses.css">
+</head>
+<body>
+    <div class="current-courses-container">
+        <header class="current-courses-header">
+            <h1>Current Courses</h1>
+            <a href="#" class="btn" onclick="goToDashboard()">Back to Dashboard</a>
+        </header>
+        <main class="current-courses-list" id="courses-list"></main>
+        <footer class="current-courses-footer">
+            <p>&copy; 2024 Student Registration System</p>
+        </footer>
+    </div>
+
+    <script>
+        async function fetchGrades(studentId) {
+            try {
+                const response = await fetch(`http://localhost:8084/api/grades/student/${studentId}`);
+                if (!response.ok) throw new Error('Network response was not ok');
+                return await response.json();
+            } catch (error) {
+                console.error('Error fetching grades:', error);
+                return [];
+            }
+        }
+
+        async function fetchCourseDetails(courseId) {
+            try {
+                const response = await fetch(`http://localhost:8082/api/courses/id/${courseId}`);
+                if (!response.ok) throw new Error('Network response was not ok');
+                return await response.json();
+            } catch (error) {
+                console.error(`Error fetching course ${courseId}:`, error);
+                return null;
+            }
+        }
+
+        async function fetchCourses(studentId) {
+            try {
+                const response = await fetch(`http://localhost:8083/api/enrollments/student/${studentId}`);
+                if (!response.ok) throw new Error('Network response was not ok');
+                const enrollments = await response.json();
+                const courseDetailsPromises = enrollments.map(enrollment => fetchCourseDetails(enrollment.courseId));
+                const coursesDetails = await Promise.all(courseDetailsPromises);
+                const grades = await fetchGrades(studentId);
+                displayCourses(enrollments, coursesDetails, grades);
+            } catch (error) {
+                console.error('Error fetching enrollments:', error);
+                document.getElementById('courses-list').innerHTML = '<p>Error loading courses.</p>';
+            }
+        }
+
+        function displayCourses(enrollments, coursesDetails, grades) {
+            const coursesList = document.getElementById('courses-list');
+            if (enrollments.length === 0) {
+                coursesList.innerHTML = '<p>No courses found.</p>';
+                return;
+            }
+
+            const approved = [];
+            const pending = [];
+            const rejected = [];
+
+            enrollments.forEach((enrollment, index) => {
+                const courseDetail = coursesDetails[index];
+                if (courseDetail) {
+                    const grade = grades.find(grade => grade.courseId === enrollment.courseId)?.grade || 'N/A';
+                    const courseItem = {
+                        name: courseDetail.name,
+                        description: courseDetail.description,
+                        status: enrollment.status,
+                        grade: grade
+                    };
+
+                    if (enrollment.status === 'APPROVED') {
+                        approved.push(courseItem);
+                    } else if (enrollment.status === 'PENDING') {
+                        pending.push(courseItem);
+                    } else {
+                        rejected.push(courseItem);
+                    }
+                }
+            });
+
+            const allCourses = [...approved, ...pending, ...rejected];
+
+            allCourses.forEach(course => {
+                const courseItem = document.createElement('div');
+                courseItem.className = 'current-course-item';
+                courseItem.innerHTML = `
+                    <h3 class="${course.status === 'APPROVED' ? 'status-approved' : course.status === 'PENDING' ? 'status-pending' : 'status-rejected'}">
+                        ${course.name} (Status: ${course.status})
+                    </h3>
+                    <p>Description: ${course.description}</p>
+                    ${course.status === 'APPROVED' ? `<p>Grade: ${course.grade}</p>` : ''}
+                `;
+                coursesList.appendChild(courseItem);
+            });
+        }
+
+        function goToDashboard() {
+            window.location.href = 'student-dashboard.html';
+        }
+
+        window.onload = function() {
+            const userData = JSON.parse(sessionStorage.getItem('userData'));
+            const studentId = userData ? userData.id : 3; // Use the ID from session storage or default to 3
+            fetchCourses(studentId);
+        };
+    </script>
+</body>
+</html>

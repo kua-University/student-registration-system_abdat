@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <link rel="stylesheet" href="styles/student-dashboard.css">
+</head>
+<body>
+    <div class="student-dashboard-container">
+        <header class="student-dashboard-header">
+            <h1>Student Dashboard</h1>
+            <a href="#" class="btn" onclick="logout()">Logout</a>
+        </header>
+        
+        <main class="dashboard-summary">
+            <div id="user-info"></div>
+            <div class="card">
+                <h3>Current Courses</h3>
+                <p>View your currently enrolled courses.</p>
+                <a href="student-current-courses.html" class="btn">View Current Courses</a>
+            </div>
+            <div class="card">
+                <h3>Available Courses</h3>
+                <p>Explore courses that are currently available for enrollment.</p>
+                <a href="student-available-courses.html" class="btn">View Available Courses</a>
+            </div>
+        </main>
+
+        <footer class="student-dashboard-footer">
+            <p>&copy; 2024 Student Registration System</p>
+        </footer>
+    </div>
+
+    <script>
+        // Retrieve user data from session storage
+        const userData = JSON.parse(sessionStorage.getItem('userData'));
+        if (userData) {
+            // Display user information
+            document.getElementById('user-info').innerHTML = `
+                <h2>Welcome, ${userData.username}!</h2>
+                <p>Role: ${userData.role}</p>
+            `;
+        } else {
+            // Redirect to login if no user data is found
+            window.location.href = 'login.html'; // Adjust according to your login page
+        }
+
+        function logout() {
+            sessionStorage.removeItem('userData'); // Clear user data
+            window.location.href = 'login.html';
+            history.replaceState(null, null, window.location.href);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="styles/admin-dashboard.css">
+</head>
+<body>
+    <div class="admin-dashboard-container">
+        <header class="admin-dashboard-header">
+            <h1>Admin Dashboard</h1>
+            <a href="#" class="btn" onclick="logout()">Logout</a>
+        </header>
+        
+        <main class="dashboard-summary">
+            <div class="card">
+                <h3>Manage Users</h3>
+                <p>Add, remove, or update user information.</p>
+                <a href="manage-users.html" class="btn">Manage Users</a>
+            </div>
+            <div class="card">
+                <h3>Manage Courses</h3>
+                <p>Add, remove, or update course information.</p>
+                <a href="manage-courses.html" class="btn">Manage Courses</a>
+            </div>
+        </main>
+
+        <footer class="admin-dashboard-footer">
+            <p>&copy; 2024 Student Registration System</p>
+        </footer>
+    </div>
+
+    <script>
+        function logout() {
+            localStorage.removeItem('authToken');
+            window.location.href = 'login.html';
+            history.replaceState(null, null, window.location.href);
+        }
+    </script>
+</body>
+</html>
