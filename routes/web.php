@@ -35,43 +35,7 @@ Route::get('/receipt/{paymentId}', [PaymentController::class, 'showReceipt'])->n
 Route::get('/receipt/{receiptId}/download', [PaymentController::class, 'downloadReceipt'])->name('receipt.download');
 
 
-// Admin routes
-Route::middleware('auth')->group(function () {
-    Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
-    
-    // Courses
-    Route::get('/admin/courses', [AdminController::class, 'showCourses'])->name('admin.courses');
-    Route::get('/admin/create-course', [AdminController::class, 'createCourse'])->name('admin.create-course');
-    Route::post('/admin/store-course', [AdminController::class, 'storeCourse'])->name('admin.store-course');
-    Route::get('/admin/edit-course/{id}', [AdminController::class, 'editCourse'])->name('admin.edit-course');
-    Route::post('/admin/update-course/{id}', [AdminController::class, 'updateCourse'])->name('admin.update-course');
-    Route::get('/admin/destroy-course/{id}', [AdminController::class, 'destroyCourse'])->name('admin.destroy-course');
-    Route::post('/admin/delete-course/{id}', [AdminController::class, 'deleteCourse'])->name('admin.delete-course');
 
-    // Teachers
-    Route::get('/admin/teachers', [AdminController::class, 'showTeachers'])->name('admin.teachers');
-    Route::get('/admin/create-teacher', [AdminController::class, 'createTeacher'])->name('admin.create-teacher');
-    Route::post('/admin/store-teacher', [AdminController::class, 'storeTeacher'])->name('admin.store-teacher');
-    Route::get('/admin/edit-teacher/{id}', [AdminController::class, 'editTeacher'])->name('admin.edit-teacher');
-    Route::put('/admin/update-teacher/{id}', [AdminController::class, 'updateTeacher'])->name('admin.update-teacher');
-    Route::get('/admin/destroy-teacher/{id}', [AdminController::class, 'destroyTeacher'])->name('admin.destroy-teacher');
-    Route::post('/admin/delete-teacher/{id}', [AdminController::class, 'deleteTeacher'])->name('admin.delete-teacher');
-
-    // Students
-    Route::get('/admin/students', [AdminController::class, 'showStudents'])->name('admin.students');
-
-    // Revenue
-    Route::get('/admin/revenue', [AdminController::class, 'showRevenue'])->name('admin.revenue');
-    Route::get('admin/update-registration-fee', [AdminController::class, 'showRegistrationFeeForm'])->name('admin.update-registration-fee');
-    Route::post('admin/update-registration-fee', [AdminController::class, 'updateRegistrationFee'])->name('admin.update-registration-fee.store');
-
-});
-
-
-// Teacher routes
-Route::middleware('auth')->group(function () {
-    Route::get('/teacher/dashboard', [TeacherController::class, 'index'])->name('teacher.dashboard');
-});
 
 // Student routes
 Route::middleware('auth')->group(function () {

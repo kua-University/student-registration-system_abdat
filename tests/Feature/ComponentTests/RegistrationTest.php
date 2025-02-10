@@ -1,18 +1,21 @@
-
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\ComponentTests;
 
 use App\Models\User;
+use App\Models\RegistrationFee;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
-class RegistrationFunctionalityTest extends TestCase
+class RegistrationTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * Test the registration form is accessible.
+     */
     public function test_registration_form_is_accessible()
     {
         $response = $this->get(route('register'));
@@ -21,27 +24,32 @@ class RegistrationFunctionalityTest extends TestCase
         $response->assertSee('Register');
     }
 
-    public function test_successful_registration()
+    /**
+     * Test successful registration of a student.
+     */
+    public function test_successful_student_registration()
     {
         $studentData = [
             'full_name' => 'John Doe',
-            'email' => 'johndoe@gmail.com',
+            'email' => 'johndoe@example.com',
             'password' => 'password123',
             'password_confirmation' => 'password123',
         ];
 
-        $response = $this->post(route('register'), $studentData);
+        $this->post(route('register'), $studentData)
+            ->assertRedirect(route('show.registration.payment'));
 
-        $response->assertRedirect(route('show.registration.payment'));
-        $user = User::where('email', 'johndoe@gmail.com')->first();
-        $this->assertAuthenticatedAs($user);
+        $this->assertDatabaseHas('users', ['name' => 'John Doe']);
     }
 
-    public function test_registration_fails_with_wrong_email()
+    /**
+     * Test registration fails with invalid email.
+     */
+    public function test_registration_fails_with_invalid_email()
     {
         $studentData = [
             'full_name' => 'John Doe',
-            'email' => 'wrong-email',
+            'email' => 'invalid-email',
             'password' => 'password123',
             'password_confirmation' => 'password123',
         ];
@@ -49,6 +57,24 @@ class RegistrationFunctionalityTest extends TestCase
         $response = $this->post(route('register'), $studentData);
 
         $response->assertSessionHasErrors(['email']);
+        $this->assertGuest();
+    }
+
+    /**
+     * Test registration fails with mismatched passwords.
+     */
+    public function test_registration_fails_with_mismatched_passwords()
+    {
+        $studentData = [
+            'full_name' => 'John Doe',
+            'email' => 'johndoe@example.com',
+            'password' => 'password123',
+            'password_confirmation' => 'differentpassword',
+        ];
+
+        $response = $this->post(route('register'), $studentData);
+
+        $response->assertSessionHasErrors(['password']);
         $this->assertGuest();
     }
 

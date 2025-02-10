@@ -80,6 +80,8 @@ class AuthController extends Controller
             'role' => 'student', // Assign the role as 'student'
         ]);
 
+        Auth::login($user);
+
         // Redirect the user to the payment page
         return redirect()->route('show.registration.payment');
     }

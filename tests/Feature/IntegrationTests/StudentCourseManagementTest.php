@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\IntegrationTests;
 
 use App\Models\User;
 use App\Models\Course;
@@ -9,7 +9,7 @@ use App\Models\CourseFee;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class StudentCourseEnrollmentTest extends TestCase
+class StudentCourseManagementTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -40,7 +40,9 @@ class StudentCourseEnrollmentTest extends TestCase
         ]);
     }
 
-
+    /**
+     * Test the enrolled courses page shows all enrolled courses for the authenticated student.
+     */
     public function test_enrolled_courses_page_shows_all_enrolled_courses()
     {
         $response = $this->actingAs($this->student)->get(route('student.enrolled-courses'));
@@ -49,7 +51,9 @@ class StudentCourseEnrollmentTest extends TestCase
         $response->assertSee($this->course->name);
     }
 
-
+    /**
+     * Test the available courses page shows all available courses for the authenticated student.
+     */
     public function test_available_courses_page_shows_all_available_courses()
     {
         $availableCourse = Course::factory()->create();
@@ -64,6 +68,9 @@ class StudentCourseEnrollmentTest extends TestCase
         $response->assertSee($availableCourse->name);
     }
 
+    /**
+     * Test successful enrollment in a course.
+     */
     public function test_successful_course_enrollment()
     {
         $newCourse = Course::factory()->create();
@@ -81,5 +88,18 @@ class StudentCourseEnrollmentTest extends TestCase
             'course_id' => $this->course->id,
             'status' => 'approved',
         ]);
+    }
+
+    /**
+     * Test enrollment fails if the student is already enrolled in the course.
+     */
+    public function test_enrollment_fails_if_student_is_already_enrolled()
+    {
+        $response = $this->actingAs($this->student)->post(route('student.enroll', $this->course->id));
+
+        $response->assertRedirect();
+        $response->assertSessionHas('error', 'You are already enrolled in this course.');
+
+        $this->assertDatabaseCount('student_course_enrollments', 1);
     }
 }
